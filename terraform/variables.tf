@@ -4,13 +4,6 @@ variable "hcloud_token" {
   sensitive   = true
 }
 
-variable "hetzner_dns_token" {
-  description = "Hetzner DNS API Token (required only when enable_dns = true)"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
 variable "ssh_key_path" {
   description = "Path to SSH public key file"
   type        = string
@@ -75,6 +68,23 @@ variable "domain" {
   description = "Domain name (required when enable_dns is true)"
   type        = string
   default     = ""
+
+  validation {
+    condition     = var.enable_dns == false || (var.enable_dns == true && length(var.domain) > 0)
+    error_message = "domain is required when enable_dns is true"
+  }
+}
+
+variable "hetzner_dns_token" {
+  description = "Hetzner DNS API Token (required only when enable_dns = true)"
+  type        = string
+  sensitive   = true
+  default     = ""
+
+  validation {
+    condition     = var.enable_dns == false || (var.enable_dns == true && length(var.hetzner_dns_token) > 0)
+    error_message = "hetzner_dns_token is required when enable_dns is true"
+  }
 }
 
 # Volume sizes (0 = no volume, use local disk)

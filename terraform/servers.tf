@@ -1,20 +1,17 @@
 locals {
-  web_hostnames         = [for i in range(var.web_count) : "${var.project_name}-web-${i + 1}"]
-  accessories_hostnames = [for i in range(var.accessories_count) : "${var.project_name}-accessories-${i + 1}"]
-
   all_hosts = concat(
     [for i in range(var.web_count) : {
-      name = "web-${i + 1}"
+      name = "${var.project_name}-web-${i + 1}"
       ip   = "10.0.1.${i + 1}"
     }],
     [for i in range(var.accessories_count) : {
-      name = "accessories-${i + 1}"
+      name = "${var.project_name}-accessories-${i + 1}"
       ip   = "10.0.1.${var.web_count + i + 1}"
     }]
   )
 
   # Volume mounts for accessories servers
-  accessories_volumes = merge(
+  accessories_volumes = var.accessories_count > 0 ? merge(
     var.postgres_volume_size > 0 ? {
       postgres = {
         device = "/dev/disk/by-id/scsi-0HC_Volume_${hcloud_volume.postgres[0].id}"
@@ -27,12 +24,12 @@ locals {
         path   = "/mnt/redis"
       }
     } : {}
-  )
+  ) : {}
 }
 
 resource "hcloud_server" "web" {
   count       = var.web_count
-  name        = "web-${count.index + 1}"
+  name        = "${var.project_name}-web-${count.index + 1}"
   server_type = var.server_type
   image       = "ubuntu-24.04"
   location    = var.server_location
@@ -56,7 +53,7 @@ resource "hcloud_server" "web" {
   firewall_ids = [hcloud_firewall.web.id]
 
   user_data = templatefile("${path.module}/templates/cloud-init.tpl", {
-    hostname = "web-${count.index + 1}"
+    hostname = "${var.project_name}-web-${count.index + 1}"
     hosts    = local.all_hosts
     volumes  = {}
   })
@@ -68,7 +65,7 @@ resource "hcloud_server" "web" {
 
 resource "hcloud_server" "accessories" {
   count       = var.accessories_count
-  name        = "accessories-${count.index + 1}"
+  name        = "${var.project_name}-accessories-${count.index + 1}"
   server_type = var.server_type
   image       = "ubuntu-24.04"
   location    = var.server_location
@@ -92,7 +89,7 @@ resource "hcloud_server" "accessories" {
   firewall_ids = [hcloud_firewall.accessories.id]
 
   user_data = templatefile("${path.module}/templates/cloud-init.tpl", {
-    hostname = "accessories-${count.index + 1}"
+    hostname = "${var.project_name}-accessories-${count.index + 1}"
     hosts    = local.all_hosts
     volumes  = count.index == 0 ? local.accessories_volumes : {}
   })

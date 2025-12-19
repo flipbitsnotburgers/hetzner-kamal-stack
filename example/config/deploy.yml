@@ -1,11 +1,11 @@
 service: hetzner-example
-image: ghcr.io/<%= ENV['KAMAL_REGISTRY_USERNAME'] %>/hetzner-example
+image: <%= ENV['KAMAL_REGISTRY_USERNAME'] %>/hetzner-example
 
 servers:
   web:
-    - web-1
+    - test-web-1
   accessories:
-    - accessories-1
+    - test-accessories-1
 
 proxy:
   ssl: false
@@ -28,8 +28,8 @@ builder:
 env:
   clear:
     PORT: "3000"
-    REDIS_URL: "redis://accessories-1:6379"
-    DATABASE_URL: "postgres://postgres:postgres@accessories-1:5432/postgres?sslmode=disable"
+    REDIS_URL: "redis://test-accessories-1:6379"
+    DATABASE_URL: "postgres://postgres:postgres@test-accessories-1:5432/postgres?sslmode=disable"
 
 accessories:
   redis:

@@ -1,3 +1,9 @@
+locals {
+  # When LB is enabled, only allow HTTP/HTTPS from the LB's private IP
+  # When LB is disabled, allow from anywhere (Kamal proxy handles SSL)
+  http_source_ips = var.enable_lb ? ["10.0.1.250/32"] : ["0.0.0.0/0", "::/0"]
+}
+
 resource "hcloud_firewall" "web" {
   name = "${var.project_name}-web-firewall"
 
@@ -19,26 +25,20 @@ resource "hcloud_firewall" "web" {
     source_ips = var.ssh_allowed_cidrs
   }
 
-  # HTTP (for Kamal proxy when no LB)
+  # HTTP - from LB only when LB enabled, otherwise from anywhere
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "80"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "80"
+    source_ips = local.http_source_ips
   }
 
-  # HTTPS (for Kamal proxy when no LB)
+  # HTTPS - from LB only when LB enabled, otherwise from anywhere
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "443"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "443"
+    source_ips = local.http_source_ips
   }
 }
 

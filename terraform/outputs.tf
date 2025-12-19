@@ -32,7 +32,7 @@ output "lb_ipv4" {
 
 output "postgres_volume" {
   description = "Postgres volume details"
-  value = var.postgres_volume_size > 0 ? {
+  value = var.postgres_volume_size > 0 && var.accessories_count > 0 ? {
     id         = hcloud_volume.postgres[0].id
     size       = hcloud_volume.postgres[0].size
     mount_path = "/mnt/postgres"
@@ -41,7 +41,7 @@ output "postgres_volume" {
 
 output "redis_volume" {
   description = "Redis volume details"
-  value = var.redis_volume_size > 0 ? {
+  value = var.redis_volume_size > 0 && var.accessories_count > 0 ? {
     id         = hcloud_volume.redis[0].id
     size       = hcloud_volume.redis[0].size
     mount_path = "/mnt/redis"
