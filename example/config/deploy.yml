@@ -1,0 +1,51 @@
+service: hetzner-example
+image: ghcr.io/<%= ENV['KAMAL_REGISTRY_USERNAME'] %>/hetzner-example
+
+servers:
+  web:
+    - web-1
+  accessories:
+    - accessories-1
+
+proxy:
+  ssl: false
+  app_port: 3000
+  healthcheck:
+    path: /up
+
+registry:
+  server: ghcr.io
+  username:
+    - KAMAL_REGISTRY_USERNAME
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch:
+    - amd64
+    - arm64
+
+env:
+  clear:
+    PORT: "3000"
+    REDIS_URL: "redis://accessories-1:6379"
+    DATABASE_URL: "postgres://postgres:postgres@accessories-1:5432/postgres?sslmode=disable"
+
+accessories:
+  redis:
+    image: valkey/valkey:8
+    roles:
+      - accessories
+    port: 6379
+    cmd: valkey-server --appendonly yes
+
+  postgres:
+    image: postgres:16
+    roles:
+      - accessories
+    port: 5432
+    env:
+      clear:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: postgres

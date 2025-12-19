@@ -1,0 +1,26 @@
+# Required
+hcloud_token      = "your-hcloud-api-token"
+hetzner_dns_token = "your-dns-api-token"
+ssh_key_path      = "~/.ssh/id_ed25519.pub"
+
+# Project settings
+project_name    = "myapp"
+server_location = "hel1"
+server_type     = "cax11"
+
+# Server counts
+web_count         = 1
+accessories_count = 1
+
+# Optional: Enable for production with custom domain
+# enable_lb           = true
+# enable_dns          = true
+# enable_managed_cert = true
+# domain              = "example.com"
+
+# Optional: Restrict SSH access
+# ssh_allowed_cidrs = ["YOUR_IP/32"]
+
+# Optional: Persistent volumes (size in GB, 0 = disabled)
+# postgres_volume_size = 20
+# redis_volume_size    = 10
