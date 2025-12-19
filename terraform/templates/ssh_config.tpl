@@ -2,7 +2,7 @@
 Host ${server.name}
     HostName ${server.ip}
     User ${ssh_user}
-    IdentityFile ~/.ssh/hetzner
+    IdentityFile ${ssh_key_path}
 
 %{ endfor ~}
 
@@ -10,6 +10,6 @@ Host ${server.name}
 Host ${server.name}
     HostName ${server.ip}
     User ${ssh_user}
-    IdentityFile ~/.ssh/hetzner
+    IdentityFile ${ssh_key_path}
 
 %{ endfor ~}
