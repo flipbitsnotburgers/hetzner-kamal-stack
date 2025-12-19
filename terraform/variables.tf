@@ -19,6 +19,11 @@ variable "web_count" {
   description = "Number of web servers to create"
   type        = number
   default     = 1
+
+  validation {
+    condition     = var.web_count >= 1
+    error_message = "web_count must be at least 1"
+  }
 }
 
 variable "accessories_count" {
