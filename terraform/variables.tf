@@ -67,6 +67,11 @@ variable "enable_managed_cert" {
   description = "Enable managed SSL certificate on LB (requires enable_lb and enable_dns)"
   type        = bool
   default     = false
+
+  validation {
+    condition     = var.enable_managed_cert == false || (var.enable_lb == true && var.enable_dns == true)
+    error_message = "enable_managed_cert requires both enable_lb and enable_dns to be true"
+  }
 }
 
 variable "domain" {
