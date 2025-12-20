@@ -143,7 +143,7 @@ Reference this repo directly from your app's infrastructure code:
 
 ```hcl
 module "hetzner_kamal" {
-  source = "git::https://github.com/flipbitsnotburgers/hetzner-kamal-stack.git//terraform?ref=main"
+  source = "git::https://github.com/flipbitsnotburgers/hetzner-kamal-stack.git//terraform?ref=master"
 
   hcloud_token = var.hcloud_token
   ssh_key_path = var.ssh_key_path
