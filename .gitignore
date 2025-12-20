@@ -13,6 +13,10 @@ example/server
 example/.kamal/secrets
 !example/.kamal/secrets.example
 
+# Environment
+.env
+!.env.example
+
 # IDE
 .idea/
 .vscode/

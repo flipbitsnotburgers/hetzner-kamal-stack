@@ -13,9 +13,9 @@ graph TB
     subgraph Hetzner Cloud
         subgraph "Private Network (10.0.1.0/24)"
             LB[Load Balancer<br/>optional]
-            Web1[web-1<br/>10.0.1.1]
-            Web2[web-2<br/>10.0.1.2]
-            Acc[accessories-1<br/>10.0.1.N]
+            Web1["{project_name}-web-1<br/>10.0.1.1"]
+            Web2["{project_name}-web-2<br/>10.0.1.2"]
+            Acc["{project_name}-accessories-1<br/>10.0.1.N"]
 
             LB --> Web1
             LB --> Web2
@@ -41,9 +41,9 @@ Single web server, Kamal handles SSL via kamal-proxy. Point your DNS manually.
 
 ```mermaid
 graph LR
-    DNS[Your DNS] --> Web[web-1<br/>Kamal Proxy<br/>SSL termination]
+    DNS[Your DNS] --> Web["{project_name}-web-1<br/>Kamal Proxy<br/>SSL termination"]
     Web --> App[Your App]
-    App --> Acc[accessories-1]
+    App --> Acc["{project_name}-accessories-1"]
     Acc --> Redis[(Redis)]
     Acc --> PG[(Postgres)]
 ```
@@ -54,9 +54,9 @@ Multiple web servers with Hetzner Load Balancer and managed SSL certificate.
 ```mermaid
 graph LR
     DNS[Hetzner DNS] --> LB[Hetzner LB<br/>Managed SSL]
-    LB --> Web1[web-1]
-    LB --> Web2[web-2]
-    Web1 --> Acc[accessories-1]
+    LB --> Web1["{project_name}-web-1"]
+    LB --> Web2["{project_name}-web-2"]
+    Web1 --> Acc["{project_name}-accessories-1"]
     Web2 --> Acc
 ```
 
@@ -111,7 +111,7 @@ kamal deploy  # Deploy your app
 | `domain` | `""` | Domain name (required if enable_dns) |
 | `postgres_volume_size` | `0` | Postgres volume size in GB (0 = disabled) |
 | `redis_volume_size` | `0` | Redis volume size in GB (0 = disabled) |
-| `ssh_allowed_cidrs` | `["0.0.0.0/0"]` | CIDRs allowed to SSH |
+| `ssh_allowed_cidrs` | `["0.0.0.0/0", "::/0"]` | CIDRs allowed to SSH |
 
 ### Example Configurations
 
@@ -146,7 +146,9 @@ The `example/` directory contains a minimal Go web server with:
 ```bash
 cd example
 cp .kamal/secrets.example .kamal/secrets
-# Edit .kamal/secrets with your GitHub credentials
+cp .env.example .env
+# Edit both files with your credentials and project name
+source .env
 kamal setup
 kamal deploy
 ```
@@ -172,8 +174,8 @@ Include config.d/*
 
 Then connect with:
 ```bash
-ssh web-1
-ssh accessories-1
+ssh {project_name}-web-1
+ssh {project_name}-accessories-1
 ```
 
 ## License
