@@ -137,6 +137,44 @@ postgres_volume_size = 20
 ssh_allowed_cidrs    = ["YOUR_IP/32"]
 ```
 
+## Use as a Terraform Module
+
+Reference this repo directly from your app's infrastructure code:
+
+```hcl
+module "hetzner_kamal" {
+  source = "git::https://github.com/flipbitsnotburgers/hetzner-kamal-stack.git//terraform?ref=main"
+
+  hcloud_token = var.hcloud_token
+  ssh_key_path = var.ssh_key_path
+
+  project_name      = "myapp"
+  web_count         = 1
+  accessories_count = 1
+
+  # Optional
+  enable_lb           = false
+  enable_dns          = false
+  enable_managed_cert = false
+  hetzner_dns_token   = ""
+  domain              = ""
+}
+
+output "web_ips" {
+  value = module.hetzner_kamal.web_public_ips
+}
+```
+
+Then in your app repo:
+
+```bash
+cd infra
+terraform init
+terraform apply
+```
+
+Use the output server names in your Kamal config (e.g., `myapp-web-1`, `myapp-accessories-1`).
+
 ## Example App
 
 The `example/` directory contains a minimal Go web server with:
