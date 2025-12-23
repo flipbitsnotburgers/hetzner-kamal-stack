@@ -25,6 +25,11 @@ output "web_public_ips" {
   value       = [for server in hcloud_server.web : server.ipv4_address]
 }
 
+output "accessories_public_ips" {
+  description = "List of accessories server public IPs"
+  value       = [for server in hcloud_server.accessories : server.ipv4_address]
+}
+
 output "lb_ipv4" {
   description = "Load balancer IPv4 address (when enabled)"
   value       = var.enable_lb ? hcloud_load_balancer.web[0].ipv4 : null

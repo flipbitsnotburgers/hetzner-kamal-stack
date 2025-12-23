@@ -104,3 +104,9 @@ variable "redis_volume_size" {
   type        = number
   default     = 0
 }
+
+variable "accessories_expose_web" {
+  description = "Expose HTTP/HTTPS on accessories servers (for observability dashboards)"
+  type        = bool
+  default     = false
+}

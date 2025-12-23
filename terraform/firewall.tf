@@ -62,4 +62,26 @@ resource "hcloud_firewall" "accessories" {
     port       = "22"
     source_ips = var.ssh_allowed_cidrs
   }
+
+  # HTTP - only when accessories_expose_web is enabled (for observability dashboards)
+  dynamic "rule" {
+    for_each = var.accessories_expose_web ? [1] : []
+    content {
+      direction  = "in"
+      protocol   = "tcp"
+      port       = "80"
+      source_ips = ["0.0.0.0/0", "::/0"]
+    }
+  }
+
+  # HTTPS - only when accessories_expose_web is enabled
+  dynamic "rule" {
+    for_each = var.accessories_expose_web ? [1] : []
+    content {
+      direction  = "in"
+      protocol   = "tcp"
+      port       = "443"
+      source_ips = ["0.0.0.0/0", "::/0"]
+    }
+  }
 }
