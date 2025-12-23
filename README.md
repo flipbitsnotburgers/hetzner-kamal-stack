@@ -94,12 +94,13 @@ kamal deploy  # Deploy your app
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `hcloud_token` | required | Hetzner Cloud API token |
-| `ssh_key_path` | required | Path to SSH public key |
 | `project_name` | `"app"` | Prefix for all resources |
 | `web_count` | `1` | Number of web servers |
 | `accessories_count` | `1` | Number of accessories servers |
 | `server_type` | `"cax11"` | Hetzner server type |
 | `server_location` | `"hel1"` | Hetzner datacenter |
+
+> **Note:** SSH keys are auto-generated and saved to `~/.ssh/{project_name}-hetzner`
 
 ### Optional Features
 
@@ -118,7 +119,6 @@ kamal deploy  # Deploy your app
 **Minimal (testing):**
 ```hcl
 hcloud_token = "your-token"
-ssh_key_path = "~/.ssh/id_ed25519.pub"
 project_name = "myapp"
 ```
 
@@ -126,7 +126,6 @@ project_name = "myapp"
 ```hcl
 hcloud_token         = "your-token"
 hetzner_dns_token    = "your-dns-token"
-ssh_key_path         = "~/.ssh/id_ed25519.pub"
 project_name         = "myapp"
 web_count            = 2
 enable_lb            = true
@@ -143,10 +142,9 @@ Reference this repo directly from your app's infrastructure code:
 
 ```hcl
 module "hetzner_kamal" {
-  source = "git::https://github.com/flipbitsnotburgers/hetzner-kamal-stack.git//terraform?ref=master"
+  source = "github.com/flipbitsnotburgers/hetzner-kamal-stack//terraform?ref=master"
 
   hcloud_token = var.hcloud_token
-  ssh_key_path = var.ssh_key_path
 
   project_name      = "myapp"
   web_count         = 1
@@ -162,6 +160,14 @@ module "hetzner_kamal" {
 
 output "web_ips" {
   value = module.hetzner_kamal.web_public_ips
+}
+
+output "ssh_private_key_path" {
+  value = module.hetzner_kamal.ssh_private_key_path
+}
+
+output "connection_info" {
+  value = module.hetzner_kamal.connection_info
 }
 ```
 
@@ -199,11 +205,20 @@ After `terraform apply`, you'll get:
 - `accessories_servers` - Accessories server IPs
 - `web_public_ips` - List of web server public IPs for DNS
 - `lb_ipv4` - Load balancer IP (if enabled)
+- `ssh_private_key_path` - Path to generated SSH private key
+- `ssh_public_key_path` - Path to generated SSH public key
+- `ssh_public_key` - SSH public key content
 - `ssh_config_path` - Path to generated SSH config
+- `connection_info` - Quick reference for connecting
 
 ## SSH Access
 
-Terraform generates an SSH config at `~/.ssh/config.d/{project_name}-hetzner`.
+Terraform automatically:
+1. Generates an ED25519 SSH key pair
+2. Saves private key to `~/.ssh/{project_name}-hetzner`
+3. Saves public key to `~/.ssh/{project_name}-hetzner.pub`
+4. Uploads public key to Hetzner
+5. Creates SSH config at `~/.ssh/config.d/{project_name}-hetzner`
 
 Ensure your `~/.ssh/config` includes:
 ```

@@ -1,7 +1,5 @@
 # Required
-hcloud_token      = "your-hcloud-api-token"
-hetzner_dns_token = "your-dns-api-token"
-ssh_key_path      = "~/.ssh/id_ed25519.pub"
+hcloud_token = "your-hcloud-api-token"
 
 # Project settings
 project_name    = "myapp"
@@ -13,6 +11,7 @@ web_count         = 1
 accessories_count = 1
 
 # Optional: Enable for production with custom domain
+# hetzner_dns_token   = "your-dns-api-token"
 # enable_lb           = true
 # enable_dns          = true
 # enable_managed_cert = true

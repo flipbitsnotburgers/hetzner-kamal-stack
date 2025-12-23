@@ -53,6 +53,21 @@ output "ssh_config_path" {
   value       = local_file.ssh_config.filename
 }
 
+output "ssh_private_key_path" {
+  description = "Path to generated SSH private key"
+  value       = local_sensitive_file.ssh_private_key.filename
+}
+
+output "ssh_public_key_path" {
+  description = "Path to generated SSH public key"
+  value       = local_file.ssh_public_key.filename
+}
+
+output "ssh_public_key" {
+  description = "SSH public key content (for adding to other services)"
+  value       = tls_private_key.deploy.public_key_openssh
+}
+
 output "connection_info" {
   description = "Quick connection info"
   value       = <<-EOT

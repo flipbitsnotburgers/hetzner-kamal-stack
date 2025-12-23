@@ -4,16 +4,6 @@ variable "hcloud_token" {
   sensitive   = true
 }
 
-variable "ssh_key_path" {
-  description = "Path to SSH public key file (must end with .pub)"
-  type        = string
-
-  validation {
-    condition     = endswith(var.ssh_key_path, ".pub")
-    error_message = "ssh_key_path must be a public key file ending with .pub"
-  }
-}
-
 variable "project_name" {
   description = "Project name used to prefix resources"
   type        = string

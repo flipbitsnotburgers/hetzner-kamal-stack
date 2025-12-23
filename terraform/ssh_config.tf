@@ -5,11 +5,6 @@ resource "null_resource" "ssh_config_dir" {
   }
 }
 
-locals {
-  # Derive private key path from public key path (remove .pub suffix)
-  ssh_private_key_path = trimsuffix(var.ssh_key_path, ".pub")
-}
-
 resource "local_file" "ssh_config" {
   filename = pathexpand("~/.ssh/config.d/${var.project_name}-hetzner")
   content = templatefile("${path.module}/templates/ssh_config.tpl", {
@@ -26,8 +21,8 @@ resource "local_file" "ssh_config" {
       }
     ]
     ssh_user     = "root"
-    ssh_key_path = local.ssh_private_key_path
+    ssh_key_path = local_sensitive_file.ssh_private_key.filename
   })
 
-  depends_on = [null_resource.ssh_config_dir]
+  depends_on = [null_resource.ssh_config_dir, local_sensitive_file.ssh_private_key]
 }
