@@ -77,7 +77,7 @@ resource "hcloud_server" "accessories" {
   }
 
   public_net {
-    ipv4_enabled = true
+    ipv4_enabled = var.accessories_public_ipv4
     ipv6_enabled = false
   }
 
@@ -86,7 +86,7 @@ resource "hcloud_server" "accessories" {
     ip         = "10.0.1.${var.web_count + count.index + 1}"
   }
 
-  firewall_ids = [hcloud_firewall.accessories.id]
+  firewall_ids = var.accessories_public_ipv4 ? [hcloud_firewall.accessories.id] : []
 
   user_data = templatefile("${path.module}/templates/cloud-init.tpl", {
     hostname = "${var.project_name}-accessories-${count.index + 1}"

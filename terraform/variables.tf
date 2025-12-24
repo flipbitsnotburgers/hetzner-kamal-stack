@@ -40,9 +40,9 @@ variable "server_type" {
 }
 
 variable "ssh_allowed_cidrs" {
-  description = "CIDRs allowed to SSH into servers"
+  description = "CIDRs allowed to SSH into servers. No default - must be explicitly set for security. Use [\"YOUR_IP/32\"] for your IP only, or [\"0.0.0.0/0\", \"::/0\"] to allow all (not recommended)."
   type        = list(string)
-  default     = ["0.0.0.0/0", "::/0"]
+  # No default - forces explicit security decision
 }
 
 # Optional features
@@ -105,8 +105,20 @@ variable "redis_volume_size" {
   default     = 0
 }
 
+variable "accessories_public_ipv4" {
+  description = "Enable public IPv4 on accessories servers. Set to false to make accessories only reachable via private network (requires VPN or bastion for SSH)."
+  type        = bool
+  default     = true
+}
+
 variable "accessories_expose_web" {
   description = "Expose HTTP/HTTPS on accessories servers (for observability dashboards)"
   type        = bool
   default     = false
+}
+
+variable "accessories_expose_web_cidrs" {
+  description = "CIDRs allowed to access HTTP/HTTPS on accessories servers. Only used when accessories_expose_web is true."
+  type        = list(string)
+  default     = ["0.0.0.0/0", "::/0"]
 }

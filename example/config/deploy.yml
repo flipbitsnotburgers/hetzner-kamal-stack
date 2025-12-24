@@ -30,7 +30,8 @@ env:
   clear:
     PORT: "3000"
     REDIS_URL: "redis://<%= project %>-accessories-1:6379"
-    DATABASE_URL: "postgres://postgres:postgres@<%= project %>-accessories-1:5432/postgres?sslmode=disable"
+  secret:
+    - DATABASE_URL
 
 accessories:
   redis:
@@ -39,6 +40,8 @@ accessories:
       - accessories
     port: 6379
     cmd: valkey-server --appendonly yes
+    directories:
+      - redis-data:/data
 
   postgres:
     image: postgres:16
@@ -48,5 +51,8 @@ accessories:
     env:
       clear:
         POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
         POSTGRES_DB: postgres
+      secret:
+        - POSTGRES_PASSWORD
+    directories:
+      - postgres-data:/var/lib/postgresql/data

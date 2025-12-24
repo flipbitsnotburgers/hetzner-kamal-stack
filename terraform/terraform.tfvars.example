@@ -1,6 +1,10 @@
 # Required
 hcloud_token = "your-hcloud-api-token"
 
+# Security: SSH access (REQUIRED - no default for security)
+# Get your IP: curl -4 ifconfig.me
+ssh_allowed_cidrs = ["YOUR_IP/32"]  # Replace with your IP, or use ["0.0.0.0/0", "::/0"] to allow all (not recommended)
+
 # Project settings
 project_name    = "myapp"
 server_location = "hel1"
@@ -17,9 +21,11 @@ accessories_count = 1
 # enable_managed_cert = true
 # domain              = "example.com"
 
-# Optional: Restrict SSH access
-# ssh_allowed_cidrs = ["YOUR_IP/32"]
-
 # Optional: Persistent volumes (size in GB, 0 = disabled)
 # postgres_volume_size = 20
 # redis_volume_size    = 10
+
+# Optional: Accessories server security
+# accessories_public_ipv4 = false          # Disable public IP (private network only)
+# accessories_expose_web = true            # Expose HTTP/HTTPS for observability dashboards
+# accessories_expose_web_cidrs = ["YOUR_IP/32"]  # Restrict dashboard access to your IP
